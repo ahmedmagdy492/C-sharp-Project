@@ -48,7 +48,7 @@ namespace Main_Server
         static void ReceivingData_callback(IAsyncResult result)
         {
             Socket socket = (Socket)result.AsyncState;
-            int amountOfData = socket.EndReceive(result);     
+            int amountOfData = socket.EndReceive(result);
             // creating a new player
             byte[] temp = new byte[amountOfData];
             Array.Copy(receivingBuffer, 0, temp, 0, temp.Length);

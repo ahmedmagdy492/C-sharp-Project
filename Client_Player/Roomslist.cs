@@ -131,6 +131,9 @@ namespace Client_Player
 
                 // recieving the updated rooms data from the server
                 Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
+                this.Hide();
+                Game game = new Game(Player, room, this);
+                game.Show();
             }            
 
         }        

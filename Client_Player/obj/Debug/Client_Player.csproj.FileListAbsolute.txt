@@ -12,3 +12,4 @@ C:\Users\AhmeD-Magdy\source\repos\Main_Server\Client_Player\obj\Debug\Client_Pla
 C:\Users\AhmeD-Magdy\source\repos\Main_Server\Client_Player\obj\Debug\Client_Player.CreateRoom.resources
 C:\Users\AhmeD-Magdy\source\repos\Main_Server\Client_Player\obj\Debug\Client_Player.csprojAssemblyReference.cache
 C:\Users\AhmeD-Magdy\source\repos\Main_Server\Client_Player\obj\Debug\Client_Player.csproj.CopyComplete
+C:\Users\AhmeD-Magdy\source\repos\Main_Server\Client_Player\obj\Debug\Client_Player.Game.resources
