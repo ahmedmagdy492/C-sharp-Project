@@ -15,6 +15,8 @@ namespace Main_Server
         public string Id { get; set; }
         public string PlayerName { get; set; }
         public string msgType { get; set; }
+        
+        public string Message { get; set; }
         [JsonIgnore]
         public PlayerStatus Status { get; set; }
         [JsonIgnore]

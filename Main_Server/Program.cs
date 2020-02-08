@@ -54,8 +54,7 @@ namespace Main_Server
             Array.Copy(receivingBuffer, 0, temp, 0, temp.Length);
             
             // checking the type of the incoming message
-            string data = Encoding.UTF8.GetString(temp);
-            
+            string data = Encoding.UTF8.GetString(temp);            
             
             if (data.Contains("Send Name"))
             {
@@ -79,10 +78,12 @@ namespace Main_Server
                 foreach(Player player in ConnectedPlayers)
                 {
                     byte[] tmp = Encoding.Default.GetBytes(data);
+                    Console.WriteLine(data);
                     player.PlayerSocket.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, SendingMsg_callback, player.PlayerSocket);
                 }
+                
                 Player sender = JsonConvert.DeserializeObject<Player>(data);
-                Console.WriteLine($"{sender.PlayerName}: {sender.msgType.Split(':')[1]}");
+                
             }
             else if(data.Contains("Create Room"))
             {
@@ -125,7 +126,7 @@ namespace Main_Server
             Socket socket = (Socket)result.AsyncState;
             socket.EndSend(result);
 
-            socket.BeginSend(receivingBuffer, 0, receivingBuffer.Length, SocketFlags.None, SendingData_callback, socket);
+            //socket.BeginSend(receivingBuffer, 0, receivingBuffer.Length, SocketFlags.None, SendingData_callback, socket);
         }
     }
 }

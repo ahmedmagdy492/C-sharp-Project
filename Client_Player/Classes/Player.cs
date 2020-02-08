@@ -13,7 +13,8 @@ namespace Main_Server
     public class Player
     {
         public string Id { get; set; }
-        public string PlayerName { get; set; }
+        public string PlayerName { get; set; }       
+        public string Message { get; set; }
         public string msgType { get; set; }
         [JsonIgnore]
         public PlayerStatus Status { get; set; }
