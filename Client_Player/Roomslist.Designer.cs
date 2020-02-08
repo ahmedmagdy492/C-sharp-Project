@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnCreateRoom = new System.Windows.Forms.Button();
+            this.btnJoin = new System.Windows.Forms.Button();
             this.lblPlayerTurn = new System.Windows.Forms.Label();
             this.chatPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.lsPlayers = new System.Windows.Forms.ListBox();
-            this.lsRooms = new System.Windows.Forms.ListBox();
-            this.btnJoin = new System.Windows.Forms.Button();
-            this.btnCreateRoom = new System.Windows.Forms.Button();
             this.lsChat = new System.Windows.Forms.ListBox();
             this.txtMsg = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
+            this.lsPlayers = new System.Windows.Forms.ListBox();
+            this.lsRooms = new System.Windows.Forms.ListBox();
             this.panel1.SuspendLayout();
             this.chatPanel.SuspendLayout();
             this.SuspendLayout();
@@ -52,6 +52,25 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(915, 76);
             this.panel1.TabIndex = 0;
+            // 
+            // btnCreateRoom
+            // 
+            this.btnCreateRoom.Location = new System.Drawing.Point(674, 18);
+            this.btnCreateRoom.Name = "btnCreateRoom";
+            this.btnCreateRoom.Size = new System.Drawing.Size(120, 42);
+            this.btnCreateRoom.TabIndex = 2;
+            this.btnCreateRoom.Text = "Create Room";
+            this.btnCreateRoom.UseVisualStyleBackColor = true;
+            this.btnCreateRoom.Click += new System.EventHandler(this.btnCreateRoom_Click);
+            // 
+            // btnJoin
+            // 
+            this.btnJoin.Location = new System.Drawing.Point(813, 18);
+            this.btnJoin.Name = "btnJoin";
+            this.btnJoin.Size = new System.Drawing.Size(90, 42);
+            this.btnJoin.TabIndex = 1;
+            this.btnJoin.Text = "Join";
+            this.btnJoin.UseVisualStyleBackColor = true;
             // 
             // lblPlayerTurn
             // 
@@ -72,44 +91,6 @@
             this.chatPanel.Name = "chatPanel";
             this.chatPanel.Size = new System.Drawing.Size(200, 385);
             this.chatPanel.TabIndex = 1;
-            // 
-            // lsPlayers
-            // 
-            this.lsPlayers.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lsPlayers.FormattingEnabled = true;
-            this.lsPlayers.ItemHeight = 20;
-            this.lsPlayers.Location = new System.Drawing.Point(200, 76);
-            this.lsPlayers.Name = "lsPlayers";
-            this.lsPlayers.Size = new System.Drawing.Size(164, 385);
-            this.lsPlayers.TabIndex = 2;
-            // 
-            // lsRooms
-            // 
-            this.lsRooms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsRooms.FormattingEnabled = true;
-            this.lsRooms.ItemHeight = 20;
-            this.lsRooms.Location = new System.Drawing.Point(364, 76);
-            this.lsRooms.Name = "lsRooms";
-            this.lsRooms.Size = new System.Drawing.Size(551, 385);
-            this.lsRooms.TabIndex = 3;
-            // 
-            // btnJoin
-            // 
-            this.btnJoin.Location = new System.Drawing.Point(813, 18);
-            this.btnJoin.Name = "btnJoin";
-            this.btnJoin.Size = new System.Drawing.Size(90, 42);
-            this.btnJoin.TabIndex = 1;
-            this.btnJoin.Text = "Join";
-            this.btnJoin.UseVisualStyleBackColor = true;
-            // 
-            // btnCreateRoom
-            // 
-            this.btnCreateRoom.Location = new System.Drawing.Point(674, 18);
-            this.btnCreateRoom.Name = "btnCreateRoom";
-            this.btnCreateRoom.Size = new System.Drawing.Size(120, 42);
-            this.btnCreateRoom.TabIndex = 2;
-            this.btnCreateRoom.Text = "Create Room";
-            this.btnCreateRoom.UseVisualStyleBackColor = true;
             // 
             // lsChat
             // 
@@ -136,6 +117,26 @@
             this.btnSend.Text = "Send";
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            // 
+            // lsPlayers
+            // 
+            this.lsPlayers.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lsPlayers.FormattingEnabled = true;
+            this.lsPlayers.ItemHeight = 20;
+            this.lsPlayers.Location = new System.Drawing.Point(200, 76);
+            this.lsPlayers.Name = "lsPlayers";
+            this.lsPlayers.Size = new System.Drawing.Size(164, 385);
+            this.lsPlayers.TabIndex = 2;
+            // 
+            // lsRooms
+            // 
+            this.lsRooms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsRooms.FormattingEnabled = true;
+            this.lsRooms.ItemHeight = 20;
+            this.lsRooms.Location = new System.Drawing.Point(364, 76);
+            this.lsRooms.Name = "lsRooms";
+            this.lsRooms.Size = new System.Drawing.Size(551, 385);
+            this.lsRooms.TabIndex = 3;
             // 
             // Roomslist
             // 

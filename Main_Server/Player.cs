@@ -10,7 +10,7 @@ namespace Main_Server
         Watching = 3
     }
 
-    internal class Player
+    public class Player
     {
         public string Id { get; set; }
         public string PlayerName { get; set; }

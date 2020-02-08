@@ -44,7 +44,7 @@ namespace Client_Player
                 client_socket.BeginConnect(new IPEndPoint(serverIP, SERVER_PORT), Connecting_Callback, player);
                 this.Hide();
                 // showing the next form            
-                Roomslist roomslist = new Roomslist(txtName.Text, client_socket);
+                Roomslist roomslist = new Roomslist(player, client_socket);
                 roomslist.Show();
             }            
         }
