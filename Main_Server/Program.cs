@@ -91,7 +91,7 @@ namespace Main_Server
                 Room room = JsonConvert.DeserializeObject<Room>(data);
                 Rooms.Add(room);
 
-                // sending created rooms info to all players
+                // sending created rooms info to all players                
                 foreach(Player player in ConnectedPlayers)
                 {
                     byte[] tmp = Encoding.Default.GetBytes(data);                    
