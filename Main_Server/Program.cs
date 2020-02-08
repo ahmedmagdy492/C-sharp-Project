@@ -91,10 +91,13 @@ namespace Main_Server
                 Room room = JsonConvert.DeserializeObject<Room>(data);
                 Rooms.Add(room);
 
+                // serializing the room list to be send
+                string roomsListStr = JsonConvert.SerializeObject(Rooms);
+
                 // sending created rooms info to all players                
                 foreach(Player player in ConnectedPlayers)
                 {
-                    byte[] tmp = Encoding.Default.GetBytes(data);                    
+                    byte[] tmp = Encoding.Default.GetBytes(roomsListStr);                    
                     player.PlayerSocket.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, SendingData_callback, player.PlayerSocket);
                 }
                 Console.WriteLine($"Room {room.RoomName} created by");

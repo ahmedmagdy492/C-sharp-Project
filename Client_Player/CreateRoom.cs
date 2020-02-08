@@ -14,6 +14,7 @@ namespace Client_Player
     public partial class CreateRoom : Form
     {
         public string criteria = string.Empty;
+        public string RoomName = string.Empty;
 
         public CreateRoom()
         {
@@ -26,6 +27,7 @@ namespace Client_Player
             if(!string.IsNullOrEmpty(txtRoomName.Text.Trim()))
             {
                 this.DialogResult = DialogResult.OK;
+                RoomName = txtRoomName.Text;
                 this.Close();
             }
         }

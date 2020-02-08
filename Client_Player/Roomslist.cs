@@ -55,9 +55,13 @@ namespace Client_Player
             }
             else if(dataInString.Contains("Create Room"))
             {
-                Room room = JsonConvert.DeserializeObject<Room>(dataInString);                
-                Rooms.Add(room);
-                lsRooms.Items.Add(room.RoomName);
+                List<Room> rooms = JsonConvert.DeserializeObject<List<Room>>(dataInString);
+                Rooms = rooms;
+                lsRooms.Items.Clear();
+                foreach(Room room in Rooms)
+                {
+                    lsRooms.Items.Add(room.RoomName);
+                }
             }
             else // showing the players in the players list box
             {
@@ -120,7 +124,7 @@ namespace Client_Player
                 Room room = new Room(Player);
                 room.MsgType = "Create Room";
                 room.RoomId = Guid.NewGuid().ToString("N");
-                room.RoomName = "Hamdy";       
+                room.RoomName = createRoom.RoomName;       
                 string data = JsonConvert.SerializeObject(room);
                 sendBuffer = Encoding.Default.GetBytes(data);
                 Player.PlayerSocket.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, SendData_callback, null);                
