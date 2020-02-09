@@ -39,9 +39,11 @@ namespace Client_Player
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     PlayerName = txtName.Text,
-                    Status = PlayerStatus.Waiting
+                    Status = "Waiting"
                 };
-                client_socket.BeginConnect(new IPEndPoint(serverIP, SERVER_PORT), Connecting_Callback, player);
+                
+                client_socket.BeginConnect(new IPEndPoint(serverIP, SERVER_PORT), Connecting_Callback, player);                
+                
                 this.Hide();
                 // showing the next form            
                 Roomslist roomslist = new Roomslist(player, client_socket);
@@ -56,17 +58,32 @@ namespace Client_Player
             Player objSended = (Player)result.AsyncState;
             objSended.msgType = "Send Name";
             string data = JsonConvert.SerializeObject(objSended);
-            sendBuffer = Encoding.UTF8.GetBytes(data);            
+            sendBuffer = Encoding.UTF8.GetBytes(data);
 
             // sending data to the main server
-            client_socket.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, SendingData_callback, null);            
+            try
+            {
+                client_socket.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, SendingData_callback, null);
+            }
+            catch (Exception)
+            {
+                
+            }            
         }
         #endregion
 
         #region sending data to the server
         private void SendingData_callback(IAsyncResult result)
         {
-            client_socket.EndSend(result);
+            try
+            {
+                client_socket.EndSend(result);
+            }
+            catch (SocketException)
+            {
+                Application.Exit();
+            }
+            
         }
         #endregion
 

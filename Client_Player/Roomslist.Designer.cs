@@ -65,12 +65,14 @@
             // 
             // btnJoin
             // 
+            this.btnJoin.Enabled = false;
             this.btnJoin.Location = new System.Drawing.Point(813, 18);
             this.btnJoin.Name = "btnJoin";
             this.btnJoin.Size = new System.Drawing.Size(90, 42);
             this.btnJoin.TabIndex = 1;
             this.btnJoin.Text = "Join";
             this.btnJoin.UseVisualStyleBackColor = true;
+            this.btnJoin.Click += new System.EventHandler(this.btnJoin_Click);
             // 
             // lblPlayerTurn
             // 
@@ -137,6 +139,7 @@
             this.lsRooms.Name = "lsRooms";
             this.lsRooms.Size = new System.Drawing.Size(551, 385);
             this.lsRooms.TabIndex = 3;
+            this.lsRooms.SelectedIndexChanged += new System.EventHandler(this.lsRooms_SelectedIndexChanged);
             // 
             // Roomslist
             // 

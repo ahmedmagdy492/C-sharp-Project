@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\JoinMsg.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Room.cs" />
     <Compile Include="CreateRoom.cs">

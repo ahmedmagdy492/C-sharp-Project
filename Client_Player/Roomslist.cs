@@ -1,4 +1,5 @@
-﻿using Main_Server;
+﻿using Client_Player.Classes;
+using Main_Server;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -60,29 +61,58 @@ namespace Client_Player
                 lsRooms.Items.Clear();
                 foreach(Room room in Rooms)
                 {
-                    lsRooms.Items.Add(room.RoomName);
+                    lsRooms.Items.Add(room.RoomName + " " + room.RoomId);
                 }
-            }
+            }            
             else // showing the players in the players list box
             {
-                // deserialize the coming object which is a list
-                AvailPlayers = JsonConvert.DeserializeObject<List<Player>>(Encoding.UTF8.GetString(temp));
+                string recData = Encoding.UTF8.GetString(temp);
 
-                foreach (Player player in AvailPlayers)
+                if(recData.Contains("room"))
                 {
-                    lsPlayers.Items.Add(player.PlayerName + " " + player.Status);
-                }                                
+                    // deserialzing the data as a room list object
+                    // recieving rooms
+                    Rooms = JsonConvert.DeserializeObject<List<Room>>(recData);
+
+                    foreach (Room room in Rooms)
+                    {
+                        lsRooms.Items.Add(room.RoomName + " " + room.RoomId);
+                    }
+                }
+                else
+                {
+                    // deserialize the coming object which is a list of players
+                    AvailPlayers = JsonConvert.DeserializeObject<List<Player>>(recData);
+
+                    foreach (Player player in AvailPlayers)
+                    {
+                        lsPlayers.Items.Add(player.PlayerName + " " + player.Status);
+                    }
+                }
+                                                
             }
             //recBuffer = new byte[2048];
-            Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
+            Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);            
         }       
 
         private void Roomslist_Load(object sender, EventArgs e)
         {
             lblPlayerTurn.Text = Player.PlayerName;
+            
+            try
+            {
+                // receiving players info from the server
+                Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
 
-            // receiving some info from the server
-            Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
+                // receiving rooms info from the server
+                Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
+
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("Cannot connect because the server is off", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
         }
 
         private void Roomslist_FormClosing(object sender, FormClosingEventArgs e)
@@ -136,6 +166,44 @@ namespace Client_Player
                 game.Show();
             }            
 
-        }        
+        }
+
+        private void lsRooms_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(lsRooms.SelectedItems.Count == 1)
+            {
+                btnJoin.Enabled = true;
+            }
+            else
+            {
+                btnSend.Enabled = false;
+            }
+        }
+
+        private void btnJoin_Click(object sender, EventArgs e)
+        {
+            // sending a special message to the server
+            // to indicate that the player wants to join a room
+            // we need 2 things (room id, all player info)
+            Player.msgType = "Join";
+
+            // creating a helper object to send a special kind of data to the server
+            JoinMsg helper = new JoinMsg
+            {
+                SenderPlayer = Player,
+                RoomId = lsRooms.SelectedItem.ToString().Split(' ')[1]
+            };
+
+            string sentData = JsonConvert.SerializeObject(helper);
+            recBuffer = Encoding.Default.GetBytes(sentData);
+            
+            /// =?>
+            Player.PlayerSocket.BeginSend(recBuffer, 0, recBuffer.Length, SocketFlags.None, SendJoinData, null);
+        }
+
+        private void SendJoinData(IAsyncResult result)
+        {
+            Player.PlayerSocket.EndSend(result);
+        }
     }
 }

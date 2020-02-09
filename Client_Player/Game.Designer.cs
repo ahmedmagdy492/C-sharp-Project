@@ -29,23 +29,34 @@
         private void InitializeComponent()
         {
             this.lblStatus = new System.Windows.Forms.Label();
+            this.lsPlayers = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
             this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 60F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatus.Location = new System.Drawing.Point(189, 130);
+            this.lblStatus.Location = new System.Drawing.Point(324, 112);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(303, 91);
             this.lblStatus.TabIndex = 0;
             this.lblStatus.Text = "Waiting";
+            // 
+            // lsPlayers
+            // 
+            this.lsPlayers.FormattingEnabled = true;
+            this.lsPlayers.ItemHeight = 20;
+            this.lsPlayers.Location = new System.Drawing.Point(13, 23);
+            this.lsPlayers.Name = "lsPlayers";
+            this.lsPlayers.Size = new System.Drawing.Size(200, 304);
+            this.lsPlayers.TabIndex = 1;
             // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(680, 355);
+            this.Controls.Add(this.lsPlayers);
             this.Controls.Add(this.lblStatus);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -55,6 +66,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Game";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Game_FormClosing);
+            this.Load += new System.EventHandler(this.Game_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -63,5 +75,6 @@
         #endregion
 
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.ListBox lsPlayers;
     }
 }
