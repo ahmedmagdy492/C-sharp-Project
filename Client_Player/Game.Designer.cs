@@ -28,9 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblStatus = new System.Windows.Forms.Label();
             this.lsPlayers = new System.Windows.Forms.ListBox();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // lsPlayers
+            // 
+            this.lsPlayers.FormattingEnabled = true;
+            this.lsPlayers.ItemHeight = 20;
+            this.lsPlayers.Location = new System.Drawing.Point(13, 23);
+            this.lsPlayers.Name = "lsPlayers";
+            this.lsPlayers.Size = new System.Drawing.Size(200, 304);
+            this.lsPlayers.TabIndex = 1;
             // 
             // lblStatus
             // 
@@ -41,15 +50,6 @@
             this.lblStatus.Size = new System.Drawing.Size(303, 91);
             this.lblStatus.TabIndex = 0;
             this.lblStatus.Text = "Waiting";
-            // 
-            // lsPlayers
-            // 
-            this.lsPlayers.FormattingEnabled = true;
-            this.lsPlayers.ItemHeight = 20;
-            this.lsPlayers.Location = new System.Drawing.Point(13, 23);
-            this.lsPlayers.Name = "lsPlayers";
-            this.lsPlayers.Size = new System.Drawing.Size(200, 304);
-            this.lsPlayers.TabIndex = 1;
             // 
             // Game
             // 
@@ -73,8 +73,7 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.ListBox lsPlayers;
+        private System.Windows.Forms.Label lblStatus;
     }
 }

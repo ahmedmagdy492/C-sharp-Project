@@ -9,7 +9,7 @@ namespace Main_Server
         public string PlayerName { get; set; }       
         public string Message { get; set; }
         public string msgType { get; set; }
-        //[JsonIgnore]
+       [JsonIgnore]
         public string Status { get; set; }
         [JsonIgnore]
         public Socket PlayerSocket { get; set; }

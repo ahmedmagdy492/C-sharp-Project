@@ -1,4 +1,5 @@
 ﻿using Client_Player.Classes;
+using guess_the_name;
 using Main_Server;
 using Newtonsoft.Json;
 using System;
@@ -82,12 +83,12 @@ namespace Client_Player
                 else
                 {
                     // deserialize the coming object which is a list of players
-                    AvailPlayers = JsonConvert.DeserializeObject<List<Player>>(recData);
+                    /*AvailPlayers = JsonConvert.DeserializeObject<List<Player>>(recData);
 
                     foreach (Player player in AvailPlayers)
                     {
                         lsPlayers.Items.Add(player.PlayerName + " " + player.Status);
-                    }
+                    }*/
                 }
                                                 
             }
@@ -105,7 +106,7 @@ namespace Client_Player
                 Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
 
                 // receiving rooms info from the server
-                Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
+                //Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
 
             }
             catch (SocketException)
@@ -162,7 +163,7 @@ namespace Client_Player
                 // recieving the updated rooms data from the server
                 Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
                 this.Hide();
-                Game game = new Game(Player, room, this);
+                GameFrm game = new GameFrm(Player, room, this);
                 game.Show();
             }            
 

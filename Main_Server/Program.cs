@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Client_Player.Classes;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace Main_Server
         private static byte[] sendingBuffer;
         private static byte[] receivingBuffer;
         private static List<Room> Rooms = new List<Room>();
+        static JoinMsg recMsg;
 
         static void Main(string[] args)
         {
@@ -29,6 +31,12 @@ namespace Main_Server
             
             server_socket.BeginAccept(AcceptingClients_callback, null);
             Console.ReadKey();
+
+            // closing all clients
+            foreach(Player player in ConnectedPlayers)
+            {
+                player.PlayerSocket.Shutdown(SocketShutdown.Both);
+            }            
         }
 
         #region Begin accepting clients
@@ -37,13 +45,14 @@ namespace Main_Server
             // getting client socket
             Socket socket = server_socket.EndAccept(result);
 
-            // begin receiving data from the client
+            // begin receiving data from clients
             socket.BeginReceive(receivingBuffer, 0, receivingBuffer.Length, SocketFlags.None, ReceivingData_callback, socket);
+            
 
             // accepting new client
             server_socket.BeginAccept(AcceptingClients_callback, null);
         }
-        #endregion
+        #endregion                
 
         #region Begin Receiving data from the clients
         static void ReceivingData_callback(IAsyncResult result)
@@ -130,18 +139,18 @@ namespace Main_Server
             else if(data.Contains("Join"))
             {
                 // receveing the data from a client that wants to join a room
-                JoinMsg recMsg = JsonConvert.DeserializeObject<JoinMsg>(data);                
+                recMsg = JsonConvert.DeserializeObject<JoinMsg>(data);
 
                 // checking the room status
-                foreach(Room room in Rooms)
+                foreach (Room room in Rooms)
                 {
-                    if(room.RoomId == recMsg.RoomId)
+                    if (room.RoomId == recMsg.RoomId)
                     {
-                        if(room.Players.Count == 1)
+                        if (room.Players.Count == 1)
                         {
                             string msg = $"{recMsg.SenderPlayer.PlayerName} wants to join?";
                             byte[] tmp = Encoding.Default.GetBytes(msg);
-                            room.OwnerPlayer.PlayerSocket.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, SendingJoinReq_callback, room.OwnerPlayer.PlayerSocket);
+                            room.OwnerPlayer.PlayerSocket.BeginSend(tmp, 0, tmp.Length ,SocketFlags.None, SendingJoinReq_callback, room.OwnerPlayer.PlayerSocket);                            
                         }
                     }
                 }
@@ -180,12 +189,14 @@ namespace Main_Server
                     }
                 }
             }
-        }
+        }       
 
         private static void SendingJoinReq_callback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
-            socket.EndSend(ar);
+            SocketError se;
+            socket.EndSend(ar, out se);
+            Console.WriteLine(se.ToString());
         }
         #endregion
 

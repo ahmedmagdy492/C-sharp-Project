@@ -43,13 +43,7 @@ namespace Client_Player
 
         private void Game_Load(object sender, EventArgs e)
         {
-            // loading connected players
-            lsPlayers.Items.Add(Owner.PlayerName);
-
-            // listening to any request coming from any other client
-            // to join the room
-            // here there is a problem
-            Owner.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, ReceiveData, Owner.PlayerSocket);
+            
         }
 
         private void ReceiveData(IAsyncResult result)
