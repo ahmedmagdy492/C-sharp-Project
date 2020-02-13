@@ -1,10 +1,8 @@
 ﻿using Client_Player;
 using Main_Server;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -16,6 +14,7 @@ namespace guess_the_name
 {
     public partial class GameFrm : Form
     {
+        #region Global Members
         public string []words;
         public string currentWord = "";
         public string showCurrentWord = "";
@@ -27,6 +26,8 @@ namespace guess_the_name
         public byte[] recBuffer;
         public byte[] sendBuffer;
         int wrongLetter = 0;
+        #endregion 
+
         public GameFrm(Player player, Room room, Roomslist parentFrm)
         {
             InitializeComponent();
@@ -120,26 +121,54 @@ namespace guess_the_name
             readalllines();
             randamWordChoice();
 
-            // loading connected players
-            //lsPlayers.Items.Add(Owner.PlayerName);
-
-            // listening to any request coming from any other client
-            // to join the room
-            // here there is a problem
-            Owner.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, ReceiveData, Owner.PlayerSocket);                        
+            WaitForPlayer();
         }
 
         #region receiving data callback
         private void ReceiveData(IAsyncResult result)
         {
-            Socket socket = (Socket)result.AsyncState;
-            SocketError se;
-            int amountOfData = socket.EndReceive(result, out se);
-            if(se == SocketError.Success)
+            Socket socket = (Socket)result.AsyncState;            
+            int amountOfData = socket.EndReceive(result);
+            byte[] temp = new byte[amountOfData];
+            Array.Copy(recBuffer, 0, temp, 0, temp.Length);
+            string dataInString = Encoding.Default.GetString(temp);
+            if (dataInString.Contains("wants to join?"))
             {
-                byte[] temp = new byte[amountOfData];
-                Array.Copy(recBuffer, 0, temp, 0, temp.Length);
-                string dataInString = Encoding.Default.GetString(temp);
+                // then we shall get a dialog box
+                DialogResult reqResult = MessageBox.Show(dataInString, "Player Request", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                if (reqResult == DialogResult.OK)
+                {
+                    // sending yes to the server
+                    Owner.msgType = "yes join";
+                    string data = JsonConvert.SerializeObject(Owner);
+                    recBuffer = Encoding.Default.GetBytes(data);
+                    socket.BeginSend(recBuffer, 0, recBuffer.Length, SocketFlags.None, Send_Callback, socket);
+                }
+            }
+
+            Owner.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, ReceiveData, Owner.PlayerSocket);
+        }
+        #endregion
+
+        private void Send_Callback(IAsyncResult result)
+        {
+            Socket socket = (Socket)result.AsyncState;
+            socket.EndSend(result);
+        }
+
+        private void GameFrm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            parentForm.Show();
+        }   
+        
+        private void WaitForPlayer()
+        {
+            var task = Task.Run(() =>
+            {
+                Owner.PlayerSocket.Receive(recBuffer, recBuffer.Length, SocketFlags.None);
+
+                string dataInString = Encoding.Default.GetString(recBuffer);
                 if (dataInString.Contains("wants to join?"))
                 {
                     // then we shall get a dialog box
@@ -147,18 +176,24 @@ namespace guess_the_name
 
                     if (reqResult == DialogResult.OK)
                     {
-
+                        // sending yes to the server
+                        Owner.msgType = "yes join";
+                        string data = JsonConvert.SerializeObject(Owner);
+                        recBuffer = Encoding.Default.GetBytes(data);
+                        Owner.PlayerSocket.BeginSend(recBuffer, 0, recBuffer.Length, SocketFlags.None, Send_Callback, Owner.PlayerSocket);
                     }
                 }
-            }
-            
-            //Owner.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, ReceiveData, Owner.PlayerSocket);
+            });
+            var awatier = task.GetAwaiter();
         }
-        #endregion
 
-        private void GameFrm_FormClosing(object sender, FormClosingEventArgs e)
+        private void btnReady_Click(object sender, EventArgs e)
         {
-            parentForm.Show();
+            // listening to any request coming from any other client
+            // to join the room
+            // here there is a problem
+            //Owner.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, ReceiveData, Owner.PlayerSocket);
+            
         }
     }    
     

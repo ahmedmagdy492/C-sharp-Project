@@ -4,6 +4,7 @@ using Main_Server;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -21,6 +22,7 @@ namespace Client_Player
         public delegate void ShowItems();
         public ShowItems showItems;
         public Roomslist thisFrm;
+        public Room RoomToJoin;
 
         public Roomslist(Player player, Socket socket)
         {
@@ -28,34 +30,32 @@ namespace Client_Player
             InitializeComponent();
             Player = player;
             Player.PlayerSocket = socket;
-            recBuffer = new byte[2048];
+            recBuffer = new byte[4048];
             sendBuffer = new byte[2048];
-            thisFrm = this;            
+            thisFrm = this;
         }        
+
+        private byte[] ArrayCopy(byte[] arr1, byte[] arr2)
+        {
+            for(int i = 0; i < arr2.Length; i++)
+            {
+                arr2[i] = arr1[i];
+            }
+            return arr2;
+        }
 
         private void RecieveData(IAsyncResult result)
         {
             int amountOfdata = Player.PlayerSocket.EndReceive(result);
-            byte[] temp = new byte[amountOfdata];
-            Array.Copy(recBuffer, 0, temp, 0, temp.Length);
-            string dataInString = Encoding.UTF8.GetString(temp);            
-            
-            // checking what type of response has the server sent
-            if(dataInString.Contains("Send Msg"))
-            {
-                // then it will be a normal msg that we need to display on the chat for everyone
-                Player player = JsonConvert.DeserializeObject<Player>(dataInString);
+            //byte[] temp = new byte[amountOfdata];
+            //File.WriteAllBytes("fle.txt", recBuffer);
+            //temp = ArrayCopy(recBuffer, temp);
+            //Array.Copy(recBuffer, 0, temp, 0, temp.Length);
+            string dataInString = Encoding.Default.GetString(recBuffer);
+            //MessageBox.Show(dataInString);
 
-                for(int i = 0; i < AvailPlayers.Count; i++ )
-                {
-                    if (AvailPlayers[i].Id == player.Id)
-                    {
-                        AvailPlayers[i].Message = player.Message;
-                    }
-                }                
-                lsChat.Items.Add($"{player.PlayerName} : {player.Message}");
-            }
-            else if(dataInString.Contains("Create Room"))
+            // checking what type of response has the server sent
+            if(dataInString.Contains("Create Room"))
             {
                 List<Room> rooms = JsonConvert.DeserializeObject<List<Room>>(dataInString);
                 Rooms = rooms;
@@ -65,9 +65,25 @@ namespace Client_Player
                     lsRooms.Items.Add(room.RoomName + " " + room.RoomId);
                 }
             }            
-            else // showing the players in the players list box
+            else if(dataInString.Contains("yes join"))
             {
-                string recData = Encoding.UTF8.GetString(temp);
+                JoinMsg joinMsg = JsonConvert.DeserializeObject<JoinMsg>(dataInString);
+                Room room = null;
+                foreach(Room r in Rooms)
+                {
+                    if(r.RoomId == joinMsg.RoomId)
+                    {
+                        room = r;
+                        break;
+                    }
+                }                
+                this.Hide();
+                GameFrm gameFrm = new GameFrm(joinMsg.SenderPlayer, room, this);
+                gameFrm.Show();
+            }
+            else
+            {
+                string recData = Encoding.Default.GetString(recBuffer);
 
                 if(recData.Contains("room"))
                 {
@@ -79,20 +95,9 @@ namespace Client_Player
                     {
                         lsRooms.Items.Add(room.RoomName + " " + room.RoomId);
                     }
-                }
-                else
-                {
-                    // deserialize the coming object which is a list of players
-                    /*AvailPlayers = JsonConvert.DeserializeObject<List<Player>>(recData);
-
-                    foreach (Player player in AvailPlayers)
-                    {
-                        lsPlayers.Items.Add(player.PlayerName + " " + player.Status);
-                    }*/
-                }
-                                                
+                }                                                
             }
-            //recBuffer = new byte[2048];
+            recBuffer = new byte[4048];
             Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);            
         }       
 
@@ -102,12 +107,8 @@ namespace Client_Player
             
             try
             {
-                // receiving players info from the server
-                Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
-
                 // receiving rooms info from the server
-                //Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
-
+                Player.PlayerSocket.BeginReceive(recBuffer, 0, recBuffer.Length, SocketFlags.None, RecieveData, null);
             }
             catch (SocketException)
             {
@@ -119,22 +120,7 @@ namespace Client_Player
         private void Roomslist_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.OpenForms[0].Close();
-        }
-
-        private void btnSend_Click(object sender, EventArgs e)
-        {
-            if(!string.IsNullOrEmpty(txtMsg.Text.Trim()))
-            {
-                // sending a message to the server which is going to be send to all clients
-                Player.msgType = $"Send Msg";
-                Player.Message = txtMsg.Text;                
-
-                string objStr = JsonConvert.SerializeObject(Player);                
-                sendBuffer = Encoding.UTF8.GetBytes(objStr);                
-                Player.PlayerSocket.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, SendData_callback, null);
-            }
-        }
-
+        }        
         private void SendData_callback(IAsyncResult result)
         {
             Player.PlayerSocket.EndSend(result);
@@ -177,7 +163,7 @@ namespace Client_Player
             }
             else
             {
-                btnSend.Enabled = false;
+                btnJoin.Enabled = false;
             }
         }
 
@@ -199,7 +185,7 @@ namespace Client_Player
             recBuffer = Encoding.Default.GetBytes(sentData);
             
             /// =?>
-            Player.PlayerSocket.BeginSend(recBuffer, 0, recBuffer.Length, SocketFlags.None, SendJoinData, null);
+            var res = Player.PlayerSocket.BeginSend(recBuffer, 0, recBuffer.Length, SocketFlags.None, SendJoinData, null);            
         }
 
         private void SendJoinData(IAsyncResult result)

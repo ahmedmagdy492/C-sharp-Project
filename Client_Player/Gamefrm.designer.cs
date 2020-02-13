@@ -57,6 +57,7 @@
             this.btnA = new System.Windows.Forms.Button();
             this.labelShowWord = new System.Windows.Forms.Label();
             this.lblPlayerTurn = new System.Windows.Forms.Label();
+            this.btnReady = new System.Windows.Forms.Button();
             this.keysBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -409,11 +410,22 @@
             this.lblPlayerTurn.TabIndex = 3;
             this.lblPlayerTurn.Text = "Player Turn";
             // 
+            // btnReady
+            // 
+            this.btnReady.Location = new System.Drawing.Point(761, 38);
+            this.btnReady.Name = "btnReady";
+            this.btnReady.Size = new System.Drawing.Size(88, 35);
+            this.btnReady.TabIndex = 4;
+            this.btnReady.Text = "Ready";
+            this.btnReady.UseVisualStyleBackColor = true;
+            this.btnReady.Click += new System.EventHandler(this.btnReady_Click);
+            // 
             // GameFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(904, 550);
+            this.Controls.Add(this.btnReady);
             this.Controls.Add(this.lblPlayerTurn);
             this.Controls.Add(this.labelShowWord);
             this.Controls.Add(this.keysBox);
@@ -463,6 +475,7 @@
         private System.Windows.Forms.Button btnA;
         private System.Windows.Forms.Label labelShowWord;
         private System.Windows.Forms.Label lblPlayerTurn;
+        private System.Windows.Forms.Button btnReady;
     }
 }
 
